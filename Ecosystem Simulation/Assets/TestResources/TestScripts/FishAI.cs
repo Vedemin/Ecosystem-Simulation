@@ -13,17 +13,84 @@ public class FishAI : MonoBehaviour
     public List<GameObject> objectsInSight;
     public float timeToCheckSight;
     public int agentLayerMask;
+    public int terrainLayerMask;
+    public float[] distances;
+    /*
+     * 0 - 90* lewo
+     * 1 - 45* lewo
+     * 2 - prosto
+     * 3 - 45* prawo
+     * 4 - 90* prawo
+     * 5 - 45* w dó³
+     * 6 - 90* w dó³
+     */
+    public int state;
+    /*
+     * -1 - ucieczka
+     * 0 - szukanie po¿ywienia
+     * 1 - szukanie partnera
+     * 2 - po¿ywienie znalezione: ryba p³ynie do niego
+     * 3 - po¿ywienie znalezione: ryba je
+     * 4 - partner znaleziony: ryba p³ynie do niego
+     * 5 - partner znaleziony: ryba kopuluje
+     */
 
     void Start()
     {
         data = GetComponent<FishData>();
         hunger = data.stomachSize;
         timeToCheckSight = data.reactionTime;
+        state = 0;
     }
 
     void Update()
     {
         GetWhatTheFishSees();
+    }
+
+    private void GetDistances()
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, -transform.right, out hit, data.eyeSightDistance, terrainLayerMask))
+        {
+            distances[0] = hit.distance;
+        }
+        if (Physics.Raycast(transform.position, transform.forward - transform.right, out hit, data.eyeSightDistance, terrainLayerMask))
+        {
+            distances[1] = hit.distance;
+        }
+        if (Physics.Raycast(transform.position, transform.forward, out hit, data.eyeSightDistance, terrainLayerMask))
+        {
+            distances[2] = hit.distance;
+        }
+        if (Physics.Raycast(transform.position, transform.forward + transform.right, out hit, data.eyeSightDistance, terrainLayerMask))
+        {
+            distances[3] = hit.distance;
+        }
+        if (Physics.Raycast(transform.position, transform.right, out hit, data.eyeSightDistance, terrainLayerMask))
+        {
+            distances[4] = hit.distance;
+        }
+    }
+
+    private void DecideWhatFishDoes()
+    {
+        switch (state)
+        {
+            case -1:
+                Escape();
+                break;
+            case 0:
+                SearchForFood();
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void SearchForFood()
+    {
+        
     }
 
     private void GetWhatTheFishSees()
@@ -62,7 +129,11 @@ public class FishAI : MonoBehaviour
                             objectsInSight.Add(hitCollider.gameObject.transform.root.gameObject);
                         }
                     }
-                }
+                }/*
+                else if (hitCollider.gameObject.layer == terrainLayerMask)
+                {
+                    
+                }*/
             }
         }
     }

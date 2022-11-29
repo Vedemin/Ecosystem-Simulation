@@ -11,6 +11,8 @@ public class FishData : MonoBehaviour
     public float speed; // Szybkoœæ poruszania siê na sekundê
     public float boostSpeed; // Szybkoœæ poruszania siê w trakcie ataku lub ucieczki
     public float boostCost; // Koszt szybkiego poruszania na sekundê
+    public float minDepth;
+    public float maxDepth;
 
     public Vector3 eyeAngle; // X - min, Y - max, dla ka¿dego oka mierzone od prosto przed siebie, Z - wertykalne
     public float eyeSightDistance;
