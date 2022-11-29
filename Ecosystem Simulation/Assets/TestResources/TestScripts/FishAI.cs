@@ -66,14 +66,4 @@ public class FishAI : MonoBehaviour
             }
         }
     }
-
-    public static Vector2 GetAngleForward(Vector3 vec, Vector3 forward)
-    {
-        // vec1 to transform.forward, vec2 to realne przesuniêcie, one maj¹ TEN SAM POCZ¥TEK, wiêc mo¿na jechaæ czysto po p³aszczyznach
-        Vector3 vecHor = new Vector3(vec.x, 0, vec.z);
-        Vector3 vecVert = new Vector3(0, vec.y, vec.z);
-        return new Vector2(Vector3.Angle(vecHor, forward), Vector3.Angle(vecVert, forward));
-
-        //return Mathf.Atan2(vec2.y - vec1.y, vec2.x - vec1.x) * 180 / Mathf.PI;
-    }
 }
