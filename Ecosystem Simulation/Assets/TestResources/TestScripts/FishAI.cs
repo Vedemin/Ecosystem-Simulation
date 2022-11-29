@@ -14,6 +14,8 @@ public class FishAI : MonoBehaviour
     public float timeToCheckSight;
     public int agentLayerMask;
     public int terrainLayerMask;
+    private List<Vector3> checkedPositions;
+    private float timeSinceLastCheck = 0f;
     public float[] distances;
     /*
      * 0 - 90* lewo
@@ -40,12 +42,16 @@ public class FishAI : MonoBehaviour
         data = GetComponent<FishData>();
         hunger = data.stomachSize;
         timeToCheckSight = data.reactionTime;
+        stamina = data.stamina;
         state = 0;
+        distances = new float[7];
+        checkedPositions = new List<Vector3>();
     }
 
     void Update()
     {
-        GetWhatTheFishSees();
+        GetWhatFishSees();
+        DecideWhatFishDoes();
     }
 
     private void GetDistances()
@@ -71,14 +77,23 @@ public class FishAI : MonoBehaviour
         {
             distances[4] = hit.distance;
         }
+        if (Physics.Raycast(transform.position, transform.forward - transform.up, out hit, data.eyeSightDistance, terrainLayerMask))
+        {
+            distances[5] = hit.distance;
+        }
+        if (Physics.Raycast(transform.position, -transform.up, out hit, data.eyeSightDistance, terrainLayerMask))
+        {
+            distances[6] = hit.distance;
+        }
     }
 
     private void DecideWhatFishDoes()
     {
+        GetDistances();
         switch (state)
         {
             case -1:
-                Escape();
+                //Escape();
                 break;
             case 0:
                 SearchForFood();
@@ -90,10 +105,21 @@ public class FishAI : MonoBehaviour
 
     private void SearchForFood()
     {
-        
+        if (timeSinceLastCheck <= 0)
+        {
+            timeSinceLastCheck = 5f;
+            if (checkedPositions.Count >= 8)
+            {
+
+            }
+        } else
+        {
+            timeSinceLastCheck -= Time.deltaTime;
+        }
+
     }
 
-    private void GetWhatTheFishSees()
+    private void GetWhatFishSees()
     {
         timeToCheckSight -= Time.deltaTime;
         if (timeToCheckSight < 0)
