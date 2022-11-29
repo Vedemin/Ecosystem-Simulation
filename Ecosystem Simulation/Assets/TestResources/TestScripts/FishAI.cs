@@ -13,7 +13,6 @@ public class FishAI : MonoBehaviour
     public List<GameObject> objectsInSight;
     public float timeToCheckSight;
     public int agentLayerMask;
-<<<<<<< Updated upstream
     public int terrainLayerMask;
     public float[] distances;
     /*
@@ -22,23 +21,21 @@ public class FishAI : MonoBehaviour
      * 2 - prosto
      * 3 - 45* prawo
      * 4 - 90* prawo
-     * 5 - 45* w dó³
-     * 6 - 90* w dó³
+     * 5 - 45* w dï¿½
+     * 6 - 90* w dï¿½
      */
     public int state;
     /*
      * -1 - ucieczka
-     * 0 - szukanie po¿ywienia
+     * 0 - szukanie poï¿½ywienia
      * 1 - szukanie partnera
-     * 2 - po¿ywienie znalezione: ryba p³ynie do niego
-     * 3 - po¿ywienie znalezione: ryba je
-     * 4 - partner znaleziony: ryba p³ynie do niego
+     * 2 - poï¿½ywienie znalezione: ryba pï¿½ynie do niego
+     * 3 - poï¿½ywienie znalezione: ryba je
+     * 4 - partner znaleziony: ryba pï¿½ynie do niego
      * 5 - partner znaleziony: ryba kopuluje
      */
-=======
     public GameObject escaping;
     public GameObject pursuing;
->>>>>>> Stashed changes
 
     void Start()
     {
