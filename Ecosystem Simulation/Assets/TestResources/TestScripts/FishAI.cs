@@ -23,19 +23,21 @@ public class FishAI : MonoBehaviour
      * 2 - prosto
      * 3 - 45* prawo
      * 4 - 90* prawo
-     * 5 - 45* w dó³
-     * 6 - 90* w dó³
+     * 5 - 45* w dï¿½
+     * 6 - 90* w dï¿½
      */
     public int state;
     /*
      * -1 - ucieczka
-     * 0 - szukanie po¿ywienia
+     * 0 - szukanie poï¿½ywienia
      * 1 - szukanie partnera
-     * 2 - po¿ywienie znalezione: ryba p³ynie do niego
-     * 3 - po¿ywienie znalezione: ryba je
-     * 4 - partner znaleziony: ryba p³ynie do niego
+     * 2 - poï¿½ywienie znalezione: ryba pï¿½ynie do niego
+     * 3 - poï¿½ywienie znalezione: ryba je
+     * 4 - partner znaleziony: ryba pï¿½ynie do niego
      * 5 - partner znaleziony: ryba kopuluje
      */
+    public GameObject escaping;
+    public GameObject pursuing;
 
     void Start()
     {
@@ -52,6 +54,11 @@ public class FishAI : MonoBehaviour
     {
         GetWhatFishSees();
         DecideWhatFishDoes();
+        GetWhatTheFishSees();
+        CheckForDanger();
+        if(escaping != null){
+            Escape();
+        }
     }
 
     private void GetDistances()
@@ -127,7 +134,7 @@ public class FishAI : MonoBehaviour
             timeToCheckSight = data.reactionTime;
             objectsInSight.Clear();
             Collider[] hitColliders = Physics.OverlapSphere(transform.position, data.eyeSightDistance);
-            // Co tu siê dzieje, to robimy sobie listê colliderów, które s¹ w zasiêgu same w sobie
+            // Co tu siï¿½ dzieje, to robimy sobie listï¿½ colliderï¿½w, ktï¿½re sï¿½ w zasiï¿½gu same w sobie
             foreach (var hitCollider in hitColliders)
             {
                 if (hitCollider.gameObject.layer == agentLayerMask && (transform.position - hitCollider.transform.position).magnitude > 0.5f)
@@ -143,7 +150,7 @@ public class FishAI : MonoBehaviour
                         verticalAngle = 360 - verticalAngle;
                     }
                     Debug.Log(hitCollider.gameObject.name + " " + horizontalAngle + " " + verticalAngle);
-                    if (Mathf.Abs(verticalAngle) <= data.eyeAngle.z) // Mieœci siê w wertykalnym zakresie wzroku ryby
+                    if (Mathf.Abs(verticalAngle) <= data.eyeAngle.z) // Mieï¿½ci siï¿½ w wertykalnym zakresie wzroku ryby
                     {
                         if (horizontalAngle > 180)
                         {
@@ -162,5 +169,37 @@ public class FishAI : MonoBehaviour
                 }*/
             }
         }
+    }
+
+    private void CheckForDanger(){
+        foreach(var obj in objectsInSight){
+            otherData = gameObject.GetComponent(typeof(FishData)) as FishData;
+            if(otherData == null) continue;
+            if(otherData.type != 0 && otherData.stomachSize < data.stomachSize){ //czy inna ryba jest roÅ›linoÅ¼ercÄ… i czy jest bardziej gÅ‚odna od nas
+                escaping = obj;
+                return;
+            }
+        }
+        escaping = null;
+    }
+
+    private void Escape(){
+        /*
+        szukanie kryjÃ³wki
+        foreach(var obj in objectsInSight){
+            if (obj is Hideout){
+                direction = obj.transform.position - transform.position;
+                direction.Normalize();
+                MoveFish(direction);
+                return;
+            }
+        }*/
+        Vector3 direction = transform.position - escaping.transform.position;
+        direction.Normalize()
+        MoveFish(direction);
+    }
+
+    private void MoveFish(Vector3 direction){
+        transform.position += direction;
     }
 }
