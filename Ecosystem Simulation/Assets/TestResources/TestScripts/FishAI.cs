@@ -35,6 +35,7 @@ public class FishAI : MonoBehaviour
      * 3 - po�ywienie znalezione: ryba je
      * 4 - partner znaleziony: ryba p�ynie do niego
      * 5 - partner znaleziony: ryba kopuluje
+     * 6 - ryba ściga inna rybę
      */
     public GameObject escaping;
     public GameObject pursuing;
@@ -53,12 +54,8 @@ public class FishAI : MonoBehaviour
     void Update()
     {
         GetWhatFishSees();
-        DecideWhatFishDoes();
-        GetWhatTheFishSees();
         CheckForDanger();
-        if(escaping != null){
-            Escape();
-        }
+        DecideWhatFishDoes();
     }
 
     private void GetDistances()
@@ -100,10 +97,15 @@ public class FishAI : MonoBehaviour
         switch (state)
         {
             case -1:
-                //Escape();
+                Escape();
                 break;
             case 0:
-                SearchForFood();
+                if(data.type == 0) SearchForFood();
+                if(data.type == 1) LookForPrey();
+                break;
+            case 6:
+                Chase();
+                LookForPrey();
                 break;
             default:
                 break;
@@ -173,14 +175,30 @@ public class FishAI : MonoBehaviour
 
     private void CheckForDanger(){
         foreach(var obj in objectsInSight){
-            otherData = gameObject.GetComponent(typeof(FishData)) as FishData;
+            var otherData = gameObject.GetComponent(typeof(FishData)) as FishData;
             if(otherData == null) continue;
             if(otherData.type != 0 && otherData.stomachSize < data.stomachSize){ //czy inna ryba jest roślinożercą i czy jest bardziej głodna od nas
                 escaping = obj;
+                state = -1;
                 return;
             }
         }
         escaping = null;
+        state = 0;
+    }
+
+    private void LookForPrey(){
+        foreach(var obj in objectsInSight){
+            var otherData = gameObject.GetComponent(typeof(FishData)) as FishData;
+            if (otherData == null) continue;
+            if (otherData.stomachSize > data.stomachSize){
+                pursuing = obj;
+                state = 6;
+                return;
+            }
+        }
+        pursuing = null;
+        state = 0;
     }
 
     private void Escape(){
@@ -195,8 +213,14 @@ public class FishAI : MonoBehaviour
             }
         }*/
         Vector3 direction = transform.position - escaping.transform.position;
-        direction.Normalize()
-        MoveFish(direction);
+        direction.Normalize();
+        MoveFish(direction * data.boostSpeed);
+    }
+
+    private void Chase(){
+        Vector3 direction = pursuing.transform.position - transform.position;
+        direction.Normalize();
+        MoveFish(direction * data.boostSpeed);
     }
 
     private void MoveFish(Vector3 direction){
