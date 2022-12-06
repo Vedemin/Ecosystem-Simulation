@@ -15,6 +15,7 @@ public class FishAI : MonoBehaviour
     public int agentLayerMask;
     public int terrainLayerMask;
     private List<Vector3> checkedPositions;
+    public float maxPositions;
     private float timeSinceLastCheck = 0f;
     public float[] distances;
     /*
@@ -126,6 +127,32 @@ public class FishAI : MonoBehaviour
             timeSinceLastCheck -= Time.deltaTime;
         }
 
+    }
+
+    private Vector3 GetNewDir()
+    {
+        bool isChosen = false;
+        Vector3 newDir = new Vector3();
+        while (isChosen == false)
+        {
+            isChosen = true;
+            newDir = new Vector3(Random.Range(0, 1), 0, Random.Range(0, 1)) * data.eyeSightDistance; // rzucamy nowy okrąg oddalony o zasięg wzroku
+            for (int i = 0; i < checkedPositions.Count; i++)
+            {
+                if (Vector3.Distance(transform.position + newDir, checkedPositions[i]) < data.eyeSightDistance / 2)
+                {
+                    isChosen = false;
+                    break;
+                }
+            }
+        }
+        return newDir;
+        /*
+        if (checkedPositions.Count >= maxPositions)
+        {
+            checkedPositions.RemoveAt(0);
+        }
+        checkedPositions.Add(transform.position + newDir) */
     }
 
     private void GetWhatFishSees()
