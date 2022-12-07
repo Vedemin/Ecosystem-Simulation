@@ -14,7 +14,7 @@ public class FishAI : MonoBehaviour
     public float timeToCheckSight;
     public int agentLayerMask;
     public int terrainLayerMask;
-    private List<Vector3> checkedPositions;
+    private List<Vector3> checkedPositions; // The last place is always the new destination
     public float maxPositions;
     private float timeSinceLastCheck = 0f;
     public float[] distances;
@@ -121,23 +121,41 @@ public class FishAI : MonoBehaviour
         }
     }
 
+    private void CleanUp()
+    {
+        if (checkedPositions.Count > 8)
+        {
+            checkedPositions.RemoveAt(0);
+        }
+    }
+
     private void SearchForFood()
     {
-        if (timeSinceLastCheck <= 0)
+        int c = checkedPositions.Count;
+        if (c > 0) // Mamy już przynajmniej jeden wygenerowany cel
         {
-            timeSinceLastCheck = 5f;
-            if (checkedPositions.Count >= 8)
+            if (transform.position.x == checkedPositions[c - 1].x && transform.position.z == checkedPositions[c - 1].z)
             {
-                if(data.type == 0) {
-                    LookForPlants();
-                }
-                if(data.type == 1){
-                    LookForPrey();
-                }
+                checkedPositions.Add(GetNewDir());
+                CleanUp();
             }
-        } else
+            else
+            {
+                Vector3 rawDir = (checkedPositions[c - 1] - transform.position);
+                Vector3 direction = rawDir.normalized * data.speed * Time.deltaTime;
+                if (rawDir.magnitude < direction.magnitude)
+                {
+                    transform.position = checkedPositions[c - 1];
+                } else
+                {
+                    MoveFish(direction);
+                }
+
+            }
+        }
+        else
         {
-            timeSinceLastCheck -= Time.deltaTime;
+            checkedPositions.Add(GetNewDir());
         }
 
     }
@@ -145,27 +163,53 @@ public class FishAI : MonoBehaviour
     private Vector3 GetNewDir()
     {
         bool isChosen = false;
-        Vector3 newDir = new Vector3();
-        while (isChosen == false)
+        Vector3 newTarget = new Vector3();
+        while (isChosen == false) // Pętla nieskończona, ale dlaczego??????
         {
             isChosen = true;
-            newDir = new Vector3(Random.Range(0, 1), 0, Random.Range(0, 1)) * data.eyeSightDistance; // rzucamy nowy okrąg oddalony o zasięg wzroku
-            for (int i = 0; i < checkedPositions.Count; i++)
+            float angle = Random.Range(0, 360);
+            Vector2 randomValues = new Vector2(Mathf.Cos(angle * Mathf.Deg2Rad), Mathf.Sin(angle * Mathf.Deg2Rad));
+            Vector3 newDir = new Vector3(randomValues.x, 0, randomValues.y).normalized * data.eyeSightDistance;
+            //Vector3 newDir = new Vector3(Random.Range(-1, 1), 0, Random.Range(-1, 1)).normalized * data.eyeSightDistance; // rzucamy nowy okrąg oddalony o zasięg wzroku
+            newTarget = transform.position + newDir;
+            if (newTarget.x > 0 && newTarget.z > 0 && newTarget.x < 1000 && newTarget.z < 1000)
             {
-                if (Vector3.Distance(transform.position + newDir, checkedPositions[i]) < data.eyeSightDistance / 2)
+                for (int i = 0; i < checkedPositions.Count; i++)
                 {
-                    isChosen = false;
-                    break;
+                    if (Vector3.Distance(newTarget, checkedPositions[i]) < data.eyeSightDistance / 2)
+                    {
+                        isChosen = false;
+                        break;
+                    }
                 }
+                if (isChosen == true)
+                {
+                    RaycastHit hit;
+                    Vector3 origin = new Vector3(newTarget.x, 270, newTarget.z);
+                    if (Physics.Raycast(origin, Vector3.down, out hit, 280))
+                    {
+                        if (hit.distance > data.maxDepth || hit.distance < data.minDepth)
+                        {
+                            isChosen = false;
+                        }
+                        else
+                        {
+                            newTarget.y = 270 - hit.distance + (data.eyeSightDistance / 4); // Przypisujemy głębokość
+                        }
+                    }
+                    else
+                    {
+                        isChosen = false; // Jeśli jest poniżej wszystkiego, to punkt jest poza mapą
+                    }
+                }
+            } else
+            {
+                isChosen = false;
             }
+            
+            
         }
-        return newDir;
-        /*
-        if (checkedPositions.Count >= maxPositions)
-        {
-            checkedPositions.RemoveAt(0);
-        }
-        checkedPositions.Add(transform.position + newDir) */
+        return newTarget;
     }
 
     private void GetWhatFishSees()
