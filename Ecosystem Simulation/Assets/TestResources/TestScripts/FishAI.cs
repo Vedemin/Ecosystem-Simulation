@@ -299,7 +299,8 @@ public class FishAI : MonoBehaviour
 
 
     private void EatPlant(){
-        hunger += plantToEat.Consume(1);
+        var plantData = plantToEat.GetComponent(typeof(Plant)) as Plant;
+        hunger += plantData.Consume(1);
     } 
 
     private void MoveFish(Vector3 direction){
