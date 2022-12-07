@@ -33,17 +33,19 @@ public class FishAI : MonoBehaviour
      * 0 - szukanie po�ywienia
      * 1 - szukanie partnera
      * 2 - po�ywienie znalezione: ryba p�ynie do niego
-     * 3 - po�ywienie znalezione: ryba je
+     * 3 - po�ywienie znalezione: ryba je (Unused)
      * 4 - partner znaleziony: ryba p�ynie do niego
      * 5 - partner znaleziony: ryba kopuluje
      * 6 - ryba ściga inna rybę
      */
     public GameObject escaping;
     public GameObject pursuing;
+    public GameObject plantToEat;
 
     void Start()
     {
         data = GetComponent<FishData>();
+        health = data.health;
         hunger = data.stomachSize;
         timeToCheckSight = data.reactionTime;
         stamina = data.stamina;
@@ -54,6 +56,9 @@ public class FishAI : MonoBehaviour
 
     void Update()
     {
+        if (health <= 0){
+            //Die
+        }
         GetWhatFishSees();
         CheckForDanger();
         DecideWhatFishDoes();
@@ -101,8 +106,11 @@ public class FishAI : MonoBehaviour
                 Escape();
                 break;
             case 0:
-                if(data.type == 0) SearchForFood();
-                if(data.type == 1) LookForPrey();
+                SearchForFood();
+                break;
+            case 2:
+                SwimTowardsPlant();
+                LookForPlants();
                 break;
             case 6:
                 Chase();
@@ -120,7 +128,12 @@ public class FishAI : MonoBehaviour
             timeSinceLastCheck = 5f;
             if (checkedPositions.Count >= 8)
             {
-
+                if(data.type == 0) {
+                    LookForPlants();
+                }
+                if(data.type == 1){
+                    LookForPrey();
+                }
             }
         } else
         {
@@ -202,7 +215,7 @@ public class FishAI : MonoBehaviour
 
     private void CheckForDanger(){
         foreach(var obj in objectsInSight){
-            var otherData = gameObject.GetComponent(typeof(FishData)) as FishData;
+            var otherData = obj.GetComponent(typeof(FishData)) as FishData;
             if(otherData == null) continue;
             if(otherData.type != 0 && otherData.stomachSize < data.stomachSize){ //czy inna ryba jest roślinożercą i czy jest bardziej głodna od nas
                 escaping = obj;
@@ -211,20 +224,6 @@ public class FishAI : MonoBehaviour
             }
         }
         escaping = null;
-        state = 0;
-    }
-
-    private void LookForPrey(){
-        foreach(var obj in objectsInSight){
-            var otherData = gameObject.GetComponent(typeof(FishData)) as FishData;
-            if (otherData == null) continue;
-            if (otherData.stomachSize > data.stomachSize){
-                pursuing = obj;
-                state = 6;
-                return;
-            }
-        }
-        pursuing = null;
         state = 0;
     }
 
@@ -244,11 +243,64 @@ public class FishAI : MonoBehaviour
         MoveFish(direction * data.boostSpeed);
     }
 
+    private void LookForPrey(){
+        foreach(var obj in objectsInSight){
+            var otherData = obj.GetComponent(typeof(FishData)) as FishData;
+            if (otherData == null) continue;
+            if (otherData.stomachSize > data.stomachSize){
+                pursuing = obj;
+                state = 6;
+                return;
+            }
+        }
+        pursuing = null;
+        state = 0;
+    }
+
     private void Chase(){
+        if ((pursuing.transform.position - transform.position).magnitude <= 2){
+            AttackFish();
+            return;
+        }
         Vector3 direction = pursuing.transform.position - transform.position;
         direction.Normalize();
         MoveFish(direction * data.boostSpeed);
     }
+
+    private void AttackFish(){
+        var opponent = pursuing.GetComponent(typeof(FishAI)) as FishAI;
+        opponent.health--;
+        hunger++;
+    }
+
+    private void LookForPlants(){
+        foreach(var obj in objectsInSight){
+            var otherData = obj.GetComponent(typeof(Plant)) as Plant;
+            if (otherData == null) continue;
+            if (otherData.amountRemaining > 0){
+                plantToEat = obj;
+                state = 2;
+                return;
+            }
+        }
+        plantToEat = null;
+        state = 0;
+    }
+
+    private void SwimTowardsPlant(){
+        if ((plantToEat.transform.position - transform.position).magnitude <= 2){
+            EatPlant();
+            return;
+        }
+        Vector3 direction = plantToEat.transform.position - transform.position;
+        direction.Normalize();
+        MoveFish(direction * data.speed);
+    }
+
+
+    private void EatPlant(){
+        hunger += plantToEat.Consume(1);
+    } 
 
     private void MoveFish(Vector3 direction){
         transform.position += direction;
