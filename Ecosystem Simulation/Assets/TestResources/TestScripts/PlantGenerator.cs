@@ -13,6 +13,7 @@ public class PlantGenerator : MonoBehaviour
 
     void Start()
     {   
+        transform.position = new Vector3(1, 320, 1);
         plantTest = Instantiate(plantToPlace);
         for(int i = 0; i < 4000; i++){
             Ray ray = new Ray (transform.position, -transform.up);
@@ -42,13 +43,13 @@ public class PlantGenerator : MonoBehaviour
 
     void Update()
     {
-        Ray ray = new Ray (transform.position, -transform.up);
-        RaycastHit hitInfo;
+        // Ray ray = new Ray (transform.position, -transform.up);
+        // RaycastHit hitInfo;
 
-            if(Physics.Raycast (ray, out hitInfo, 1000)){
-                Debug.Log(plantTest.GetComponent<Plant>().SpawnProbability(hitInfo.distance));
-                Debug.DrawLine (ray.origin, hitInfo.point, Color.red);
-                // Debug.Log(hitInfo.distance);
-            }
+        //     if(Physics.Raycast (ray, out hitInfo, 1000)){
+        //         Debug.Log(plantTest.GetComponent<Plant>().SpawnProbability(hitInfo.distance));
+        //         Debug.DrawLine (ray.origin, hitInfo.point, Color.red);
+        //         // Debug.Log(hitInfo.distance);
+        //     }
     }
 }
