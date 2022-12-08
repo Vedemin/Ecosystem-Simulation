@@ -46,13 +46,9 @@ public class FishAI : MonoBehaviour
     LayerMask tm;
     void Start()
     {
-<<<<<<< Updated upstream
         lm = LayerMask.GetMask("Agents");
         tm = LayerMask.GetMask("Terrain");
-        data = GetComponent<FishData>();
-=======
         data = gameObject.GetComponent(typeof(FishData)) as FishData;
->>>>>>> Stashed changes
         health = data.health;
         hunger = data.stomachSize;
         timeToCheckSight = data.reactionTime;
@@ -237,7 +233,7 @@ public class FishAI : MonoBehaviour
             {
                 if (Vector3.Distance(transform.position, hitCollider.transform.position) > 1.26f)
                 {
-                    Debug.Log(Vector3.Distance(transform.position, hitCollider.transform.position));
+                    //Debug.Log(Vector3.Distance(transform.position, hitCollider.transform.position));
                     lookCheckerHorizontal.LookAt(hitCollider.transform);
                     lookCheckerHorizontal.localEulerAngles = new Vector3(0, lookCheckerHorizontal.localEulerAngles.y, 0);
                     float horizontalAngle = lookCheckerHorizontal.localEulerAngles.y;
@@ -248,10 +244,7 @@ public class FishAI : MonoBehaviour
                     {
                         verticalAngle = 360 - verticalAngle;
                     }
-<<<<<<< Updated upstream
-=======
                     //Debug.Log(hitCollider.gameObject.name + " " + horizontalAngle + " " + verticalAngle);
->>>>>>> Stashed changes
                     if (Mathf.Abs(verticalAngle) <= data.eyeAngle.z) // Mie�ci si� w wertykalnym zakresie wzroku ryby
                     {
                         if (horizontalAngle > 180)
@@ -262,7 +255,7 @@ public class FishAI : MonoBehaviour
                         {
                             // Ryba widzi obiekt
                             objectsInSight.Add(hitCollider.gameObject.transform.root.gameObject);
-                            Debug.Log(hitCollider.gameObject.transform.root.gameObject.name + " " + horizontalAngle + " " + verticalAngle);
+                            //Debug.Log(hitCollider.gameObject.transform.root.gameObject.name + " " + horizontalAngle + " " + verticalAngle);
                         }
                     }
                 }/*
@@ -275,7 +268,9 @@ public class FishAI : MonoBehaviour
     }
 
     private void CheckForDanger(){
+        return;
         foreach(var obj in objectsInSight){
+            if (obj == null) return;
             var otherData = obj.GetComponent(typeof(FishData)) as FishData;
             if(otherData == null) continue;
             if(otherData.type != 0){ //czy inna ryba jest roślinożercą i czy jest bardziej głodna od nas
@@ -307,12 +302,11 @@ public class FishAI : MonoBehaviour
 
     private void LookForPrey(){
         foreach(var obj in objectsInSight){
-
+            if (obj == null) continue;
             var otherData = obj.GetComponent(typeof(FishData)) as FishData;
             if (otherData == null) continue;
             if (otherData.type == 0){
                 pursuing = obj;
-                Debug.Log("changing to 6");
                 state = 6;
                 return;
             }
@@ -335,11 +329,13 @@ public class FishAI : MonoBehaviour
     private void AttackFish(){
         var opponent = pursuing.GetComponent(typeof(FishAI)) as FishAI;
         opponent.health--;
+        Debug.Log(opponent.health);
         hunger++;
     }
 
     private void LookForPlants(){
         foreach(var obj in objectsInSight){
+            if (obj == null) continue;
             var otherData = obj.GetComponent(typeof(Plant)) as Plant;
             if (otherData == null) continue;
             if (otherData.amountRemaining > 0){
