@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class FishData : MonoBehaviour
 {
+    public int startingPopulation;
     public int type; // 0 - roœlino¿erca, 1 - miêso¿erca, 2 - wszystko¿erca
     public float health;
     public float stomachSize; // Max iloœæ punktów po¿ywienia
