@@ -46,9 +46,13 @@ public class FishAI : MonoBehaviour
     LayerMask tm;
     void Start()
     {
+<<<<<<< Updated upstream
         lm = LayerMask.GetMask("Agents");
         tm = LayerMask.GetMask("Terrain");
         data = GetComponent<FishData>();
+=======
+        data = gameObject.GetComponent(typeof(FishData)) as FishData;
+>>>>>>> Stashed changes
         health = data.health;
         hunger = data.stomachSize;
         timeToCheckSight = data.reactionTime;
@@ -56,15 +60,17 @@ public class FishAI : MonoBehaviour
         state = 0;
         distances = new float[7];
         checkedPositions = new List<Vector3>();
+        data.eyeSightDistance = 150;
     }
 
     void Update()
     {
         if (health <= 0){
-            //Die
+            Destroy(gameObject);
         }
         GetWhatFishSees();
-        CheckForDanger();
+        //Debug.Log(objectsInSight.Count);
+        if (data.type == 0) CheckForDanger();
         DecideWhatFishDoes();
     }
 
@@ -111,6 +117,8 @@ public class FishAI : MonoBehaviour
                 break;
             case 0:
                 SearchForFood();
+                if(data.type == 0) LookForPlants();
+                if(data.type == 1) LookForPrey();
                 break;
             case 2:
                 SwimTowardsPlant();
@@ -240,6 +248,10 @@ public class FishAI : MonoBehaviour
                     {
                         verticalAngle = 360 - verticalAngle;
                     }
+<<<<<<< Updated upstream
+=======
+                    //Debug.Log(hitCollider.gameObject.name + " " + horizontalAngle + " " + verticalAngle);
+>>>>>>> Stashed changes
                     if (Mathf.Abs(verticalAngle) <= data.eyeAngle.z) // Mie�ci si� w wertykalnym zakresie wzroku ryby
                     {
                         if (horizontalAngle > 180)
@@ -266,7 +278,7 @@ public class FishAI : MonoBehaviour
         foreach(var obj in objectsInSight){
             var otherData = obj.GetComponent(typeof(FishData)) as FishData;
             if(otherData == null) continue;
-            if(otherData.type != 0 && otherData.stomachSize < data.stomachSize){ //czy inna ryba jest roślinożercą i czy jest bardziej głodna od nas
+            if(otherData.type != 0){ //czy inna ryba jest roślinożercą i czy jest bardziej głodna od nas
                 escaping = obj;
                 state = -1;
                 return;
@@ -277,6 +289,7 @@ public class FishAI : MonoBehaviour
     }
 
     private void Escape(){
+        if (escaping == null) return;
         /*
         szukanie kryjówki
         foreach(var obj in objectsInSight){
@@ -294,10 +307,12 @@ public class FishAI : MonoBehaviour
 
     private void LookForPrey(){
         foreach(var obj in objectsInSight){
+
             var otherData = obj.GetComponent(typeof(FishData)) as FishData;
             if (otherData == null) continue;
-            if (otherData.stomachSize > data.stomachSize){
+            if (otherData.type == 0){
                 pursuing = obj;
+                Debug.Log("changing to 6");
                 state = 6;
                 return;
             }
@@ -307,13 +322,14 @@ public class FishAI : MonoBehaviour
     }
 
     private void Chase(){
-        if ((pursuing.transform.position - transform.position).magnitude <= 2){
+        if (pursuing == null) return;
+        if ((pursuing.transform.position - transform.position).magnitude <= data.boostSpeed * Time.deltaTime){
             AttackFish();
             return;
         }
         Vector3 direction = pursuing.transform.position - transform.position;
         direction.Normalize();
-        MoveFish(direction * data.boostSpeed);
+        MoveFish(direction * data.boostSpeed * Time.deltaTime);
     }
 
     private void AttackFish(){
@@ -337,13 +353,14 @@ public class FishAI : MonoBehaviour
     }
 
     private void SwimTowardsPlant(){
-        if ((plantToEat.transform.position - transform.position).magnitude <= 2){
+        if (plantToEat == null) return;
+        if ((plantToEat.transform.position - transform.position).magnitude <= data.speed * Time.deltaTime){
             EatPlant();
             return;
         }
         Vector3 direction = plantToEat.transform.position - transform.position;
         direction.Normalize();
-        MoveFish(direction * data.speed);
+        MoveFish(direction * data.speed * Time.deltaTime);
     }
 
 
