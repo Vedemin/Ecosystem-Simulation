@@ -43,7 +43,7 @@ public class FishSpawner : MonoBehaviour
                         spawnPoint = new Vector3(Random.Range(5, 995), 0, Random.Range(5, 995));
                 }
                 var fish = Instantiate(prefabList[i]);
-                fish.transform.SetParent(this.transform);
+                //fish.transform.SetParent(this.transform);
                 fish.transform.position = spawnPoint;
             }
         }

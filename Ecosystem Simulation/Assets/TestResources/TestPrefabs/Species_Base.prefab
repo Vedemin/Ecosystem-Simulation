@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1665192465350571701}
   - component: {fileID: 1665192465350571702}
   - component: {fileID: 1665192465350571703}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Eye_L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -109,7 +109,7 @@ GameObject:
   - component: {fileID: 1665192465421260765}
   - component: {fileID: 1665192465421260766}
   - component: {fileID: 1665192465421260767}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Eye_R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -205,7 +205,7 @@ GameObject:
   - component: {fileID: 1665192465635472642}
   - component: {fileID: 1665192465635472643}
   - component: {fileID: 1665192465635472644}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Species_Base
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -252,7 +252,7 @@ MonoBehaviour:
   minDepth: 0
   maxDepth: 300
   eyeAngle: {x: -15, y: 130, z: 60}
-  eyeSightDistance: 20
+  eyeSightDistance: 100
   reactionTime: 0.5
 --- !u!114 &1665192465635472644
 MonoBehaviour:
@@ -357,7 +357,7 @@ GameObject:
   - component: {fileID: 1665192466836000605}
   - component: {fileID: 1665192466836000606}
   - component: {fileID: 1665192466836000607}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Fin
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -738,6 +738,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7348203353655372481, guid: b316c878cbe33b1418661f3c8521c656,
+        type: 3}
+      propertyPath: eyeSightDistance
+      value: 30
+      objectReference: {fileID: 0}
     - target: {fileID: 7348203353655372487, guid: b316c878cbe33b1418661f3c8521c656,
         type: 3}
       propertyPath: m_Name

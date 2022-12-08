@@ -42,8 +42,12 @@ public class FishAI : MonoBehaviour
     public GameObject pursuing;
     public GameObject plantToEat;
 
+    LayerMask lm;
+    LayerMask tm;
     void Start()
     {
+        lm = LayerMask.GetMask("Agents");
+        tm = LayerMask.GetMask("Terrain");
         data = GetComponent<FishData>();
         health = data.health;
         hunger = data.stomachSize;
@@ -99,7 +103,7 @@ public class FishAI : MonoBehaviour
 
     private void DecideWhatFishDoes()
     {
-        GetDistances();
+        //GetDistances();
         switch (state)
         {
             case -1:
@@ -186,7 +190,7 @@ public class FishAI : MonoBehaviour
                 {
                     RaycastHit hit;
                     Vector3 origin = new Vector3(newTarget.x, 270, newTarget.z);
-                    if (Physics.Raycast(origin, Vector3.down, out hit, 280))
+                    if (Physics.Raycast(origin, Vector3.down, out hit, 280, tm))
                     {
                         if (hit.distance > data.maxDepth || hit.distance < data.minDepth)
                         {
@@ -219,12 +223,13 @@ public class FishAI : MonoBehaviour
         {
             timeToCheckSight = data.reactionTime;
             objectsInSight.Clear();
-            Collider[] hitColliders = Physics.OverlapSphere(transform.position, data.eyeSightDistance);
+            Collider[] hitColliders = Physics.OverlapSphere(transform.position, data.eyeSightDistance, lm);
             // Co tu si� dzieje, to robimy sobie list� collider�w, kt�re s� w zasi�gu same w sobie
             foreach (var hitCollider in hitColliders)
             {
-                if (hitCollider.gameObject.layer == agentLayerMask && (transform.position - hitCollider.transform.position).magnitude > 0.5f)
+                if (Vector3.Distance(transform.position, hitCollider.transform.position) > 1.26f)
                 {
+                    Debug.Log(Vector3.Distance(transform.position, hitCollider.transform.position));
                     lookCheckerHorizontal.LookAt(hitCollider.transform);
                     lookCheckerHorizontal.localEulerAngles = new Vector3(0, lookCheckerHorizontal.localEulerAngles.y, 0);
                     float horizontalAngle = lookCheckerHorizontal.localEulerAngles.y;
@@ -235,7 +240,6 @@ public class FishAI : MonoBehaviour
                     {
                         verticalAngle = 360 - verticalAngle;
                     }
-                    Debug.Log(hitCollider.gameObject.name + " " + horizontalAngle + " " + verticalAngle);
                     if (Mathf.Abs(verticalAngle) <= data.eyeAngle.z) // Mie�ci si� w wertykalnym zakresie wzroku ryby
                     {
                         if (horizontalAngle > 180)
@@ -246,6 +250,7 @@ public class FishAI : MonoBehaviour
                         {
                             // Ryba widzi obiekt
                             objectsInSight.Add(hitCollider.gameObject.transform.root.gameObject);
+                            Debug.Log(hitCollider.gameObject.transform.root.gameObject.name + " " + horizontalAngle + " " + verticalAngle);
                         }
                     }
                 }/*
