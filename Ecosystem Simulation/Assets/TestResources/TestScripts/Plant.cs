@@ -10,7 +10,7 @@ public class Plant : MonoBehaviour
     public float growSpeedRange = 10;
     public float maxFoodAmount = 100;
     public float neighbourhoodRange = 10;
-    public float spreadProbability = 0.1f;
+    public float spreadProbability = 0.0f;
     public float depth;
     public Vector3 maxSize = new Vector3(5f, 1f, 5f);
     public Vector3 startSize = new Vector3(1f, 1f, 1f);
@@ -61,6 +61,7 @@ public class Plant : MonoBehaviour
         if(amountRemaining < amount)
         {
             Destroy(gameObject);
+            // Debug.Log("consume");
             return amountRemaining;
         }
         else
