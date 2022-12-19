@@ -37,7 +37,7 @@ public class Plant : MonoBehaviour
     //rozsiewanie sie roslin
     public void Spread(){
         if(transform.localScale.x > maxSize.x - growSpeedRange / 100){
-            if(Random.Range(0f, 1f) > spreadProbability){
+            if(Random.Range(0f, 1f) < spreadProbability){
                 Ray ray = new Ray (transform.position + new Vector3(Random.Range(-neighbourhoodRange, neighbourhoodRange), depth, Random.Range(-neighbourhoodRange, neighbourhoodRange)), -transform.up);
                 RaycastHit hitInfo;
 

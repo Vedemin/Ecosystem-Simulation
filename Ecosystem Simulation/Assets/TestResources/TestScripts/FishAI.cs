@@ -35,12 +35,14 @@ public class FishAI : MonoBehaviour
      * 2 - po�ywienie znalezione: ryba p�ynie do niego
      * 3 - po�ywienie znalezione: ryba je (Unused)
      * 4 - partner znaleziony: ryba p�ynie do niego
-     * 5 - partner znaleziony: ryba kopuluje
+     * 5 - partner znaleziony: ryba kopuluje (Unused)
      * 6 - ryba ściga inna rybę
      */
     public GameObject escaping;
     public GameObject pursuing;
     public GameObject plantToEat;
+    public GameObject partner;
+    public GameObject egg;
 
     LayerMask lm;
     LayerMask tm;
@@ -116,9 +118,16 @@ public class FishAI : MonoBehaviour
                 if(data.type == 0) LookForPlants();
                 if(data.type == 1) LookForPrey();
                 break;
+            case 1:
+                LookForPartner();
+                SearchForFood();
+                break;
             case 2:
                 SwimTowardsPlant();
                 LookForPlants();
+                break;
+            case 4:
+                SwimTowardsPartner();
                 break;
             case 6:
                 Chase();
@@ -329,11 +338,12 @@ public class FishAI : MonoBehaviour
     private void AttackFish(){
         var opponent = pursuing.GetComponent(typeof(FishAI)) as FishAI;
         opponent.health--;
-        Debug.Log(opponent.health);
+        // Debug.Log(opponent.health);
         hunger++;
     }
 
     private void LookForPlants(){
+        // Debug.Log("Loopfor plant");
         foreach(var obj in objectsInSight){
             if (obj == null) continue;
             var otherData = obj.GetComponent(typeof(Plant)) as Plant;
@@ -362,8 +372,62 @@ public class FishAI : MonoBehaviour
 
     private void EatPlant(){
         var plantData = plantToEat.GetComponent(typeof(Plant)) as Plant;
-        hunger += plantData.Consume(1);
+        hunger += plantData.Consume(100);
     } 
+
+    private void LookForPartner(){
+        // Debug.Log("LookForPartner");
+        foreach(var obj in objectsInSight){
+            if (obj == null) continue;
+            var otherData = obj.GetComponent(typeof(FishData)) as FishData;
+            if (otherData == null) continue;
+            //To do zmiany bedzie jezeli bedzie mozna rozroznic gatunek a nie tylko typ
+            if (otherData.type == data.type){
+                //Czy tez szuka partnera
+                if(state == obj.GetComponent<FishAI>().state){
+                    if(Random.Range(0.0f, 1.0f) < otherData.partnerAcceptChance){
+                        partner = obj;
+                        state = 4;
+                        data.speed *= 2;
+                        return;
+                    }
+                    state = 0;
+                }
+            }
+        }
+        partner = null;
+        state = 1;
+    }
+
+    private void SwimTowardsPartner(){
+        if (partner == null) return;
+        // Debug.Log("SwimTowardsPartner");
+        if ((partner.transform.position - transform.position).magnitude <= data.speed * Time.deltaTime){
+            data.speed /= 2;
+            Copulate();
+            return;
+        }
+        Vector3 direction = partner.transform.position - transform.position;
+        direction.Normalize();
+        MoveFish(direction * data.speed * Time.deltaTime);
+    }
+
+    private void Copulate(){
+        Ray ray = new Ray (transform.position, -transform.up);
+        RaycastHit hitInfo;
+        if(Physics.Raycast (ray, out hitInfo, 1000)){
+            // Debug.Log("copulation");
+            GameObject newEgg = Instantiate(egg);
+            newEgg.transform.position = hitInfo.point;
+            // newEgg.GetComponent<Egg>().start = true;
+            newEgg.GetComponent<Egg>().fishToBorn = gameObject;
+            var partnerData = partner.GetComponent(typeof(FishData)) as FishData;
+            var p = partner.GetComponent(typeof(FishAI)) as FishAI;
+            p.state = 0;
+            partner = null;
+            state = 0;
+        }
+    }
 
     private void MoveFish(Vector3 direction){
         transform.position += direction;
