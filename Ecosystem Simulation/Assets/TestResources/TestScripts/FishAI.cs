@@ -66,6 +66,7 @@ public class FishAI : MonoBehaviour
         if (health <= 0){
             Destroy(gameObject);
         }
+        TakeMeAboveTheGround();
         GetWhatFishSees();
         //Debug.Log(objectsInSight.Count);
         if (data.type == 0) CheckForDanger();
@@ -143,6 +144,15 @@ public class FishAI : MonoBehaviour
         if (checkedPositions.Count > 8)
         {
             checkedPositions.RemoveAt(0);
+        }
+    }
+
+    private void TakeMeAboveTheGround(){
+        Ray ray = new Ray (transform.position, -transform.up);
+        RaycastHit hitInfo;
+        if(!Physics.Raycast (ray, out hitInfo, 500)){
+            Debug.DrawLine (ray.origin, hitInfo.point, Color.green);
+            transform.position += new Vector3(0, 1, 0);
         }
     }
 
