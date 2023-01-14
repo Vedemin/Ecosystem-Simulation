@@ -37,6 +37,26 @@ PrefabInstance:
       propertyPath: type
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2115522119797479642, guid: 5693a54baec0591419f5b7352bc151e8,
+        type: 3}
+      propertyPath: urge
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 2115522119797479642, guid: 5693a54baec0591419f5b7352bc151e8,
+        type: 3}
+      propertyPath: stomachSize
+      value: 70
+      objectReference: {fileID: 0}
+    - target: {fileID: 2115522119797479642, guid: 5693a54baec0591419f5b7352bc151e8,
+        type: 3}
+      propertyPath: startingPopulation
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 2115522119797479642, guid: 5693a54baec0591419f5b7352bc151e8,
+        type: 3}
+      propertyPath: partnerAcceptChance
+      value: 0.6
+      objectReference: {fileID: 0}
     - target: {fileID: 2115522119797479643, guid: 5693a54baec0591419f5b7352bc151e8,
         type: 3}
       propertyPath: m_RootOrder
@@ -101,6 +121,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Layer
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2115522119797479644, guid: 5693a54baec0591419f5b7352bc151e8,
+        type: 3}
+      propertyPath: m_TagString
+      value: herbivore
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5693a54baec0591419f5b7352bc151e8, type: 3}

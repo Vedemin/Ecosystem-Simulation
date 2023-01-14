@@ -69,8 +69,28 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1665192465635472643, guid: 859cfab9db446db40a79e58b12b27bf1,
         type: 3}
+      propertyPath: urge
+      value: 60
+      objectReference: {fileID: 0}
+    - target: {fileID: 1665192465635472643, guid: 859cfab9db446db40a79e58b12b27bf1,
+        type: 3}
+      propertyPath: stomachSize
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 1665192465635472643, guid: 859cfab9db446db40a79e58b12b27bf1,
+        type: 3}
+      propertyPath: eyeSightDistance
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 1665192465635472643, guid: 859cfab9db446db40a79e58b12b27bf1,
+        type: 3}
       propertyPath: startingPopulation
       value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 1665192465635472643, guid: 859cfab9db446db40a79e58b12b27bf1,
+        type: 3}
+      propertyPath: partnerAcceptChance
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 1665192465635472644, guid: 859cfab9db446db40a79e58b12b27bf1,
         type: 3}
@@ -82,6 +102,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Species_Carnivore
+      objectReference: {fileID: 0}
+    - target: {fileID: 1665192465635472645, guid: 859cfab9db446db40a79e58b12b27bf1,
+        type: 3}
+      propertyPath: m_TagString
+      value: carnivore
       objectReference: {fileID: 0}
     - target: {fileID: 1665192466836000606, guid: 859cfab9db446db40a79e58b12b27bf1,
         type: 3}

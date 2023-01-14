@@ -10,6 +10,7 @@ public class FishAI : MonoBehaviour
     public float health;
     public float hunger;
     public float stamina;
+    public float urge;
     public List<GameObject> objectsInSight;
     public float timeToCheckSight;
     public int agentLayerMask;
@@ -44,6 +45,9 @@ public class FishAI : MonoBehaviour
     public GameObject partner;
     public GameObject egg;
 
+    public int growInterval = 1; 
+    float nextTime = 0;
+
     LayerMask lm;
     LayerMask tm;
     void Start()
@@ -52,9 +56,10 @@ public class FishAI : MonoBehaviour
         tm = LayerMask.GetMask("Terrain");
         data = gameObject.GetComponent(typeof(FishData)) as FishData;
         health = data.health;
-        hunger = data.stomachSize;
+        hunger = Mathf.Floor(Random.Range(0, data.stomachSize));
         timeToCheckSight = data.reactionTime;
         stamina = data.stamina;
+        urge = Mathf.Floor(Random.Range(0, data.urge));
         state = 0;
         distances = new float[7];
         checkedPositions = new List<Vector3>();
@@ -63,6 +68,13 @@ public class FishAI : MonoBehaviour
 
     void Update()
     {
+        if (Time.time >= nextTime) {
+ 
+            FishUpdate();
+ 
+            nextTime += 1; 
+         }
+
         if (health <= 0){
             Destroy(gameObject);
         }
@@ -71,6 +83,18 @@ public class FishAI : MonoBehaviour
         //Debug.Log(objectsInSight.Count);
         if (data.type == 0) CheckForDanger();
         DecideWhatFishDoes();
+    }
+
+    private void FishUpdate(){
+        if(hunger > 0)
+            hunger--;
+        else
+            health--;
+        
+        if(urge >= 0 && urge < data.urge)
+            urge++;
+        if(urge >= data.urge)
+            state = 1;
     }
 
     private void GetDistances()
@@ -151,7 +175,7 @@ public class FishAI : MonoBehaviour
         Ray ray = new Ray (transform.position, -transform.up);
         RaycastHit hitInfo;
         if(!Physics.Raycast (ray, out hitInfo, 500)){
-            Debug.DrawLine (ray.origin, hitInfo.point, Color.green);
+            // Debug.DrawLine (ray.origin, hitInfo.point, Color.green);
             transform.position += new Vector3(0, 1, 0);
         }
     }
@@ -325,9 +349,11 @@ public class FishAI : MonoBehaviour
             var otherData = obj.GetComponent(typeof(FishData)) as FishData;
             if (otherData == null) continue;
             if (otherData.type == 0){
-                pursuing = obj;
-                state = 6;
-                return;
+                if(hunger < Mathf.Floor(data.stomachSize / 2)){
+                    pursuing = obj;
+                    state = 6;
+                    return;
+                }
             }
         }
         pursuing = null;
@@ -347,9 +373,9 @@ public class FishAI : MonoBehaviour
 
     private void AttackFish(){
         var opponent = pursuing.GetComponent(typeof(FishAI)) as FishAI;
-        opponent.health--;
         // Debug.Log(opponent.health);
-        hunger++;
+        hunger += opponent.health;
+        opponent.health--;
     }
 
     private void LookForPlants(){
@@ -383,6 +409,7 @@ public class FishAI : MonoBehaviour
     private void EatPlant(){
         var plantData = plantToEat.GetComponent(typeof(Plant)) as Plant;
         hunger += plantData.Consume(100);
+        hunger = data.stomachSize;
     } 
 
     private void LookForPartner(){
@@ -401,6 +428,9 @@ public class FishAI : MonoBehaviour
                         data.speed *= 2;
                         return;
                     }
+                    obj.GetComponent<FishAI>().urge = 0;
+                    obj.GetComponent<FishAI>().state = 0;
+                    urge = 0;
                     state = 0;
                 }
             }
@@ -429,11 +459,13 @@ public class FishAI : MonoBehaviour
             // Debug.Log("copulation");
             GameObject newEgg = Instantiate(egg);
             newEgg.transform.position = hitInfo.point;
-            // newEgg.GetComponent<Egg>().start = true;
+            newEgg.GetComponent<Egg>().start = true;
             newEgg.GetComponent<Egg>().fishToBorn = gameObject;
             var partnerData = partner.GetComponent(typeof(FishData)) as FishData;
             var p = partner.GetComponent(typeof(FishAI)) as FishAI;
             p.state = 0;
+            p.urge = 0;
+            urge = 0;
             partner = null;
             state = 0;
         }

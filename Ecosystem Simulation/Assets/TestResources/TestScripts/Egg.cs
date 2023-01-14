@@ -9,11 +9,13 @@ public class Egg : MonoBehaviour
     private float nextTime = 0;
     private int timeLeftToBorn = 5;
     public bool start = false;
+    public GameObject newFish;
 
     // Start is called before the first frame update
     void Start()
     {
-
+        if(fishToBorn != null)
+            newFish = Instantiate(fishToBorn);
     }
 
     // Update is called once per frame
@@ -35,7 +37,7 @@ public class Egg : MonoBehaviour
     }
 
     private void BornNewFish(){
-        GameObject newFish = Instantiate(fishToBorn);
         newFish.transform.position = transform.position;
+        // Debug.Log("born");
     }
 }

@@ -403,6 +403,50 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
+--- !u!1 &1166120305
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1166120306}
+  - component: {fileID: 1166120307}
+  m_Layer: 0
+  m_Name: Statistics
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1166120306
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1166120305}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 39.601196, y: 117.53806, z: 177.18698}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 9
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1166120307
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1166120305}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6abcc9e4158594f4497a931960b86c92, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1392358717 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1786825411321270480, guid: 2ad7f0556f2deb6499644ae0517c708e,
@@ -549,7 +593,7 @@ GameObject:
   - component: {fileID: 1734952788}
   m_Layer: 3
   m_Name: Food 1
-  m_TagString: Untagged
+  m_TagString: food
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -644,13 +688,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7141df79ef9ae04d9b63722b0912a71, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  preferedDepth: 250
-  depthTolerance: 30
+  preferedDepth: 100
+  depthTolerance: 60
   amountRemaining: 10
   growSpeedRange: 10
   maxFoodAmount: 100
   neighbourhoodRange: 10
-  spreadProbability: 0
+  spreadProbability: 0.1
   depth: 0
   maxSize: {x: 5, y: 1, z: 5}
   startSize: {x: 1, y: 1, z: 1}

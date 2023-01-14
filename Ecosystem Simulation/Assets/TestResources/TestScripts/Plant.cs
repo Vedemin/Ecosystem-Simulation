@@ -79,10 +79,10 @@ public class Plant : MonoBehaviour
 	        amountRemaining = maxFoodAmount;
         }
 
-        if(transform.localScale.x < maxSize.x){
-            float growScale = growSpeedRange / 100;
-            transform.localScale += new Vector3 (growScale, 0f, growScale);
-        }
+        // if(transform.localScale.x < maxSize.x){
+        //     float growScale = growSpeedRange / 100;
+        //     transform.localScale += new Vector3 (growScale, 0f, growScale);
+        // }
     }
 
     public float SpawnProbability(float depth)

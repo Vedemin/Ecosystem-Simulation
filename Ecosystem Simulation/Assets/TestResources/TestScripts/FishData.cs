@@ -14,7 +14,8 @@ public class FishData : MonoBehaviour
     public float boostCost; // Koszt szybkiego poruszania na sekund�
     public float minDepth;
     public float maxDepth;
-    public float partnerAcceptChance = 1;
+    public float partnerAcceptChance;
+    public float urge;
 
     public Vector3 eyeAngle; // X - min, Y - max, dla ka�dego oka mierzone od prosto przed siebie, Z - wertykalne
     public float eyeSightDistance;
