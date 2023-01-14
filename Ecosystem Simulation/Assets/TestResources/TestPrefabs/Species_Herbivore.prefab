@@ -40,12 +40,17 @@ PrefabInstance:
     - target: {fileID: 2115522119797479642, guid: 5693a54baec0591419f5b7352bc151e8,
         type: 3}
       propertyPath: urge
-      value: 30
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 2115522119797479642, guid: 5693a54baec0591419f5b7352bc151e8,
         type: 3}
       propertyPath: stomachSize
-      value: 70
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 2115522119797479642, guid: 5693a54baec0591419f5b7352bc151e8,
+        type: 3}
+      propertyPath: eyeSightDistance
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 2115522119797479642, guid: 5693a54baec0591419f5b7352bc151e8,
         type: 3}
@@ -55,7 +60,7 @@ PrefabInstance:
     - target: {fileID: 2115522119797479642, guid: 5693a54baec0591419f5b7352bc151e8,
         type: 3}
       propertyPath: partnerAcceptChance
-      value: 0.6
+      value: 0.3
       objectReference: {fileID: 0}
     - target: {fileID: 2115522119797479643, guid: 5693a54baec0591419f5b7352bc151e8,
         type: 3}

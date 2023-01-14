@@ -111,5 +111,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ed132d06a10fbe4397c1974bc29629a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fishToBorn: {fileID: 0}
+  fishToBornList:
+  - {fileID: 7348203353655372487, guid: b316c878cbe33b1418661f3c8521c656, type: 3}
+  - {fileID: 2115522119797479644, guid: 5693a54baec0591419f5b7352bc151e8, type: 3}
+  typeToBorn: 0
+  timeLeftToBorn: 15
   start: 0

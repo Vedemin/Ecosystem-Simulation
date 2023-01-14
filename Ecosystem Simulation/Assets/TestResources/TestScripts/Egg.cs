@@ -4,18 +4,16 @@ using UnityEngine;
 
 public class Egg : MonoBehaviour
 {
-    public GameObject fishToBorn;
+    public List<GameObject> fishToBornList;
     private int growInterval = 1; 
+    public int typeToBorn;
     private float nextTime = 0;
-    private int timeLeftToBorn = 5;
+    public int timeLeftToBorn = 25;
     public bool start = false;
-    public GameObject newFish;
 
     // Start is called before the first frame update
     void Start()
     {
-        if(fishToBorn != null)
-            newFish = Instantiate(fishToBorn);
     }
 
     // Update is called once per frame
@@ -28,6 +26,7 @@ public class Egg : MonoBehaviour
                 if(timeLeftToBorn <= 0){
                     BornNewFish();
                     Destroy(gameObject);
+                    return;
                 }
                 timeLeftToBorn -= 1;
             }
@@ -37,6 +36,7 @@ public class Egg : MonoBehaviour
     }
 
     private void BornNewFish(){
+        GameObject newFish = Instantiate(fishToBornList[typeToBorn]);
         newFish.transform.position = transform.position;
         // Debug.Log("born");
     }

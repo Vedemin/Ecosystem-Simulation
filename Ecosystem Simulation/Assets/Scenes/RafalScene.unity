@@ -447,12 +447,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6abcc9e4158594f4497a931960b86c92, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &1392358717 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1786825411321270480, guid: 2ad7f0556f2deb6499644ae0517c708e,
-    type: 3}
-  m_PrefabInstance: {fileID: 1786825412162069997}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1440583165
 GameObject:
   m_ObjectHideFlags: 0
@@ -562,7 +556,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   plantList:
   - {fileID: 1734952783}
-  chunkSize: 10
+  chunkSize: 11
 --- !u!4 &1544141007
 Transform:
   m_ObjectHideFlags: 0
@@ -689,12 +683,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   preferedDepth: 100
-  depthTolerance: 60
+  depthTolerance: 100
   amountRemaining: 10
   growSpeedRange: 10
   maxFoodAmount: 100
   neighbourhoodRange: 10
-  spreadProbability: 0.1
+  spreadProbability: 0
   depth: 0
   maxSize: {x: 5, y: 1, z: 5}
   startSize: {x: 1, y: 1, z: 1}
@@ -864,6 +858,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Egg
       objectReference: {fileID: 0}
+    - target: {fileID: 1786825411321270483, guid: 2ad7f0556f2deb6499644ae0517c708e,
+        type: 3}
+      propertyPath: start
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2ad7f0556f2deb6499644ae0517c708e, type: 3}
 --- !u!1001 &7348203353637622461
@@ -937,7 +936,8 @@ PrefabInstance:
         type: 3}
       propertyPath: egg
       value: 
-      objectReference: {fileID: 1392358717}
+      objectReference: {fileID: 1786825411321270480, guid: 2ad7f0556f2deb6499644ae0517c708e,
+        type: 3}
     - target: {fileID: 7348203353655372487, guid: b316c878cbe33b1418661f3c8521c656,
         type: 3}
       propertyPath: m_Name
