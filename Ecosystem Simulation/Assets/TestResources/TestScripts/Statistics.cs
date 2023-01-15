@@ -17,6 +17,7 @@ public class Statistics : MonoBehaviour
     void Start()
     {
         File.WriteAllText(@"log_file.txt", string.Empty);
+        File.WriteAllText(@"dead_fishes.txt", string.Empty);
     }
 
     // Update is called once per frame

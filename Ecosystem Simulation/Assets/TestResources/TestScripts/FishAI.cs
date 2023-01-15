@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.IO;
+using System.Text;
 
 public class FishAI : MonoBehaviour
 {
@@ -81,6 +83,7 @@ public class FishAI : MonoBehaviour
 
         if (health <= 0){
             Destroy(gameObject);
+            File.AppendAllText(@"dead_fishes.txt", data.type + " " + age + System.Environment.NewLine);
         }
         TakeMeAboveTheGround();
         GetWhatFishSees();
