@@ -688,7 +688,7 @@ MonoBehaviour:
   growSpeedRange: 10
   maxFoodAmount: 100
   neighbourhoodRange: 10
-  spreadProbability: 0
+  spreadProbability: 0.015
   depth: 0
   maxSize: {x: 5, y: 1, z: 5}
   startSize: {x: 1, y: 1, z: 1}

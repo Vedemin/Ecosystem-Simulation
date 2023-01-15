@@ -19,6 +19,7 @@ public class FishAI : MonoBehaviour
     public float maxPositions;
     private float timeSinceLastCheck = 0f;
     public float[] distances;
+    public int age;
     /*
      * 0 - 90* lewo
      * 1 - 45* lewo
@@ -61,21 +62,22 @@ public class FishAI : MonoBehaviour
             hunger = Mathf.Floor(Random.Range(data.stomachSize - 40, data.stomachSize));
         timeToCheckSight = data.reactionTime;
         stamina = data.stamina;
-        urge = Mathf.Floor(Random.Range(0, data.urge));
+        urge = Mathf.Floor(Random.Range(0, data.urge / 2));
         state = 0;
         distances = new float[7];
         checkedPositions = new List<Vector3>();
         data.eyeSightDistance = 150;
+        age = 0;
     }
 
     void Update()
     {
-        if (Time.time >= nextTime) {
+        // if (Time.time >= nextTime) {
  
-            FishUpdate();
+        //     FishUpdate();
  
-            nextTime += Interval;
-         }
+        //     nextTime += Interval;
+        //  }
 
         if (health <= 0){
             Destroy(gameObject);
@@ -87,15 +89,15 @@ public class FishAI : MonoBehaviour
         DecideWhatFishDoes();
     }
 
-    private void FishUpdate(){
-        if(hunger > 0)
-            hunger--;
-        else
-            health--;
+    // private void FishUpdate(){
+    //     if(hunger > 0)
+    //         hunger--;
+    //     else
+    //         health--;
         
-        if(urge >= 0 && urge < data.urge)
-            urge++;
-    }
+    //     if(urge >= 0 && urge < data.urge)
+    //         urge++;
+    // }
 
     private void GetDistances()
     {
@@ -144,6 +146,8 @@ public class FishAI : MonoBehaviour
                 if(data.type == 1) LookForPrey();
                 break;
             case 1:
+                // state = 0;
+                // break;
                 if(urge >= data.urge)
                     LookForPartner();
                 else

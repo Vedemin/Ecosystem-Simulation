@@ -25,13 +25,13 @@ public class Plant : MonoBehaviour
 
     void Update()
     {
-        if (Time.time >= nextTime) {
+        // if (Time.time >= nextTime) {
  
-            Grow();
-            Spread();
+        //     Grow();
+        //     Spread();
  
-            nextTime += growInterval; 
-         }
+        //     nextTime += growInterval; 
+        //  }
     }
 
     //rozsiewanie sie roslin

@@ -8,7 +8,7 @@ public class Egg : MonoBehaviour
     private int growInterval = 1; 
     public int typeToBorn;
     private float nextTime = 0;
-    public int timeLeftToBorn = 25;
+    public int timeLeftToBorn = 5;
     public bool start = false;
 
     // Start is called before the first frame update
@@ -19,25 +19,26 @@ public class Egg : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Time.time >= nextTime) {
+        // if (Time.time >= nextTime) {
 
-            if(start){
-                // Debug.Log(timeLeftToBorn);
-                if(timeLeftToBorn <= 0){
-                    BornNewFish();
-                    Destroy(gameObject);
-                    return;
-                }
-                timeLeftToBorn -= 1;
-            }
+        //     if(start){
+        //         // Debug.Log(timeLeftToBorn);
+        //         if(timeLeftToBorn <= 0){
+        //             BornNewFish();
+        //             Destroy(gameObject);
+        //             return;
+        //         }
+        //         timeLeftToBorn -= 1;
+        //     }
  
-            nextTime += growInterval; 
-         }
+        //     nextTime += growInterval; 
+        //  }
     }
 
-    private void BornNewFish(){
+    public void BornNewFish(){
         GameObject newFish = Instantiate(fishToBornList[typeToBorn]);
         newFish.transform.position = transform.position;
+        Destroy(gameObject);
         // Debug.Log("born");
     }
 }

@@ -70,12 +70,12 @@ PrefabInstance:
     - target: {fileID: 1665192465635472643, guid: 859cfab9db446db40a79e58b12b27bf1,
         type: 3}
       propertyPath: urge
-      value: 60
+      value: 90
       objectReference: {fileID: 0}
     - target: {fileID: 1665192465635472643, guid: 859cfab9db446db40a79e58b12b27bf1,
         type: 3}
       propertyPath: stomachSize
-      value: 80
+      value: 70
       objectReference: {fileID: 0}
     - target: {fileID: 1665192465635472643, guid: 859cfab9db446db40a79e58b12b27bf1,
         type: 3}
@@ -90,7 +90,7 @@ PrefabInstance:
     - target: {fileID: 1665192465635472643, guid: 859cfab9db446db40a79e58b12b27bf1,
         type: 3}
       propertyPath: partnerAcceptChance
-      value: 0.5
+      value: 0.15
       objectReference: {fileID: 0}
     - target: {fileID: 1665192465635472644, guid: 859cfab9db446db40a79e58b12b27bf1,
         type: 3}
