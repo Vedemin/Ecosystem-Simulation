@@ -25,19 +25,19 @@ public class Plant : MonoBehaviour
 
     void Update()
     {
-        if (Time.time >= nextTime) {
+        // if (Time.time >= nextTime) {
  
-            Grow();
-            Spread();
+        //     Grow();
+        //     Spread();
  
-            nextTime += growInterval; 
-         }
+        //     nextTime += growInterval; 
+        //  }
     }
 
     //rozsiewanie sie roslin
     public void Spread(){
-        if(transform.localScale.x > maxSize.x - growSpeedRange / 100){
-            if(Random.Range(0f, 1f) > spreadProbability){
+        if(true){
+            if(Random.Range(0f, 1f) < spreadProbability){
                 Ray ray = new Ray (transform.position + new Vector3(Random.Range(-neighbourhoodRange, neighbourhoodRange), depth, Random.Range(-neighbourhoodRange, neighbourhoodRange)), -transform.up);
                 RaycastHit hitInfo;
 
@@ -79,10 +79,10 @@ public class Plant : MonoBehaviour
 	        amountRemaining = maxFoodAmount;
         }
 
-        if(transform.localScale.x < maxSize.x){
-            float growScale = growSpeedRange / 100;
-            transform.localScale += new Vector3 (growScale, 0f, growScale);
-        }
+        // if(transform.localScale.x < maxSize.x){
+        //     float growScale = growSpeedRange / 100;
+        //     transform.localScale += new Vector3 (growScale, 0f, growScale);
+        // }
     }
 
     public float SpawnProbability(float depth)

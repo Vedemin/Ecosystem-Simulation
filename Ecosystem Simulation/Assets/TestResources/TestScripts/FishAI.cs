@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.IO;
+using System.Text;
 
 public class FishAI : MonoBehaviour
 {
@@ -10,6 +12,7 @@ public class FishAI : MonoBehaviour
     public float health;
     public float hunger;
     public float stamina;
+    public float urge;
     public List<GameObject> objectsInSight;
     public float timeToCheckSight;
     public int agentLayerMask;
@@ -18,6 +21,7 @@ public class FishAI : MonoBehaviour
     public float maxPositions;
     private float timeSinceLastCheck = 0f;
     public float[] distances;
+    public int age;
     /*
      * 0 - 90* lewo
      * 1 - 45* lewo
@@ -35,12 +39,17 @@ public class FishAI : MonoBehaviour
      * 2 - po�ywienie znalezione: ryba p�ynie do niego
      * 3 - po�ywienie znalezione: ryba je (Unused)
      * 4 - partner znaleziony: ryba p�ynie do niego
-     * 5 - partner znaleziony: ryba kopuluje
+     * 5 - partner znaleziony: ryba kopuluje (Unused)
      * 6 - ryba ściga inna rybę
      */
     public GameObject escaping;
     public GameObject pursuing;
     public GameObject plantToEat;
+    public GameObject partner;
+    public GameObject egg;
+
+    public int Interval = 1; 
+    float nextTime = 0;
 
     LayerMask lm;
     LayerMask tm;
@@ -50,25 +59,48 @@ public class FishAI : MonoBehaviour
         tm = LayerMask.GetMask("Terrain");
         data = gameObject.GetComponent(typeof(FishData)) as FishData;
         health = data.health;
-        hunger = data.stomachSize;
+        hunger = Mathf.Floor(Random.Range(0, data.stomachSize));
+        if(data.type == 0)
+            hunger = Mathf.Floor(Random.Range(data.stomachSize - 40, data.stomachSize));
         timeToCheckSight = data.reactionTime;
         stamina = data.stamina;
+        urge = Mathf.Floor(Random.Range(0, data.urge / 2));
         state = 0;
         distances = new float[7];
         checkedPositions = new List<Vector3>();
         data.eyeSightDistance = 150;
+        age = 0;
     }
 
     void Update()
     {
+        // if (Time.time >= nextTime) {
+ 
+        //     FishUpdate();
+ 
+        //     nextTime += Interval;
+        //  }
+
         if (health <= 0){
             Destroy(gameObject);
+            File.AppendAllText(@"dead_fishes.txt", data.type + " " + age + System.Environment.NewLine);
         }
+        TakeMeAboveTheGround();
         GetWhatFishSees();
         //Debug.Log(objectsInSight.Count);
         if (data.type == 0) CheckForDanger();
         DecideWhatFishDoes();
     }
+
+    // private void FishUpdate(){
+    //     if(hunger > 0)
+    //         hunger--;
+    //     else
+    //         health--;
+        
+    //     if(urge >= 0 && urge < data.urge)
+    //         urge++;
+    // }
 
     private void GetDistances()
     {
@@ -116,13 +148,25 @@ public class FishAI : MonoBehaviour
                 if(data.type == 0) LookForPlants();
                 if(data.type == 1) LookForPrey();
                 break;
+            case 1:
+                // state = 0;
+                // break;
+                if(urge >= data.urge)
+                    LookForPartner();
+                else
+                    state = 0;
+                // SearchForFood();
+                break;
             case 2:
                 SwimTowardsPlant();
-                LookForPlants();
+                // LookForPlants();
+                break;
+            case 4:
+                SwimTowardsPartner();
                 break;
             case 6:
                 Chase();
-                LookForPrey();
+                // LookForPrey();
                 break;
             default:
                 break;
@@ -134,6 +178,15 @@ public class FishAI : MonoBehaviour
         if (checkedPositions.Count > 8)
         {
             checkedPositions.RemoveAt(0);
+        }
+    }
+
+    private void TakeMeAboveTheGround(){
+        Ray ray = new Ray (transform.position, -transform.up);
+        RaycastHit hitInfo;
+        if(!Physics.Raycast (ray, out hitInfo, 500)){
+            // Debug.DrawLine (ray.origin, hitInfo.point, Color.green);
+            transform.position += new Vector3(0, 1, 0);
         }
     }
 
@@ -306,9 +359,11 @@ public class FishAI : MonoBehaviour
             var otherData = obj.GetComponent(typeof(FishData)) as FishData;
             if (otherData == null) continue;
             if (otherData.type == 0){
-                pursuing = obj;
-                state = 6;
-                return;
+                if(hunger < data.stomachSize - 30){
+                    pursuing = obj;
+                    state = 6;
+                    return;
+                }
             }
         }
         pursuing = null;
@@ -316,7 +371,10 @@ public class FishAI : MonoBehaviour
     }
 
     private void Chase(){
-        if (pursuing == null) return;
+        if (pursuing == null) {
+            state = 0;
+            return;
+        }
         if ((pursuing.transform.position - transform.position).magnitude <= data.boostSpeed * Time.deltaTime){
             AttackFish();
             return;
@@ -328,20 +386,24 @@ public class FishAI : MonoBehaviour
 
     private void AttackFish(){
         var opponent = pursuing.GetComponent(typeof(FishAI)) as FishAI;
+        // Debug.Log(opponent.health);
+        hunger = data.stomachSize;
         opponent.health--;
-        Debug.Log(opponent.health);
-        hunger++;
+        state = 1;
     }
 
     private void LookForPlants(){
+        // Debug.Log("Loopfor plant");
         foreach(var obj in objectsInSight){
             if (obj == null) continue;
             var otherData = obj.GetComponent(typeof(Plant)) as Plant;
             if (otherData == null) continue;
             if (otherData.amountRemaining > 0){
-                plantToEat = obj;
-                state = 2;
-                return;
+                if(hunger < data.stomachSize / 2){
+                    plantToEat = obj;
+                    state = 2;
+                    return;
+                }
             }
         }
         plantToEat = null;
@@ -349,21 +411,83 @@ public class FishAI : MonoBehaviour
     }
 
     private void SwimTowardsPlant(){
-        if (plantToEat == null) return;
-        if ((plantToEat.transform.position - transform.position).magnitude <= data.speed * Time.deltaTime){
+        if (plantToEat == null) {
+            state = 0;
+            return;
+        }
+        if ((plantToEat.transform.position - transform.position).magnitude <= data.boostSpeed * Time.deltaTime){
             EatPlant();
+            state = 1;
             return;
         }
         Vector3 direction = plantToEat.transform.position - transform.position;
         direction.Normalize();
-        MoveFish(direction * data.speed * Time.deltaTime);
+        MoveFish(direction * data.boostSpeed * Time.deltaTime);
     }
 
 
     private void EatPlant(){
         var plantData = plantToEat.GetComponent(typeof(Plant)) as Plant;
-        hunger += plantData.Consume(1);
+        hunger += plantData.Consume(200);
+        hunger = data.stomachSize;
     } 
+
+    private void LookForPartner(){
+        // Debug.Log("LookForPartner");
+        foreach(var obj in objectsInSight){
+            if (obj == null) continue;
+            var otherData = obj.GetComponent(typeof(FishData)) as FishData;
+            if (otherData == null) continue;
+            //To do zmiany bedzie jezeli bedzie mozna rozroznic gatunek a nie tylko typ
+            if (otherData.type == data.type){
+                //Czy tez szuka partnera
+                if(state == obj.GetComponent<FishAI>().state){
+                    if(Random.Range(0.0f, 1.0f) < otherData.partnerAcceptChance){
+                        partner = obj;
+                        state = 4;
+                        return;
+                    }
+                    obj.GetComponent<FishAI>().urge = 0;
+                    obj.GetComponent<FishAI>().state = 0;
+                    urge = 0;
+                    state = 0;
+                }
+            }
+        }
+        partner = null;
+        state = 1;
+    }
+
+    private void SwimTowardsPartner(){
+        if (partner == null) return;
+        // Debug.Log("SwimTowardsPartner");
+        if ((partner.transform.position - transform.position).magnitude <= data.boostSpeed * Time.deltaTime){
+            Copulate();
+            return;
+        }
+        Vector3 direction = partner.transform.position - transform.position;
+        direction.Normalize();
+        MoveFish(direction * data.boostSpeed * Time.deltaTime);
+    }
+
+    private void Copulate(){
+        Ray ray = new Ray (transform.position, -transform.up);
+        RaycastHit hitInfo;
+        if(Physics.Raycast (ray, out hitInfo, 1000)){
+            // Debug.Log("copulation");
+            GameObject newEgg = Instantiate(egg);
+            newEgg.transform.position = hitInfo.point;
+            newEgg.GetComponent<Egg>().typeToBorn = data.type;
+            newEgg.GetComponent<Egg>().start = true;
+            var partnerData = partner.GetComponent(typeof(FishData)) as FishData;
+            var p = partner.GetComponent(typeof(FishAI)) as FishAI;
+            p.state = 0;
+            p.urge = 0;
+            urge = 0;
+            partner = null;
+            state = 0;
+        }
+    }
 
     private void MoveFish(Vector3 direction){
         transform.position += direction;
